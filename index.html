@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Perguntas - Game of Thrones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(https://wallpaperswide.com/download/game_of_thrones_season_7_winter_has_come-wallpaper-1680x1260.jpg); /* Caminho para a imagem */
+            background-size: cover; /* A imagem cobrirá toda a tela */
+            background-position: center; /* A imagem será centralizada */
+            background-repeat: no-repeat; /* A imagem não se repetirá */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(15, 15, 15, 0.589);
+            width: 400px;
+            padding: 20px;
+            box-shadow: 0px 0px 15px rgba(250, 249, 249, 0.5);
+            border-radius: 10px;
+            text-align: center;
+            color:#fff
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .options li {
+            margin: 10px 0;
+        }
+
+        .options button {
+            padding: 10px 20px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            background-color: #1d72b8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .options button:hover {
+            background-color: #155a8a;
+        }
+
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .menu button {
+            padding: 10px 15px;
+            font-size: 16px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .menu button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Perguntas e Respostas ⚔️ 🤴</h1>
+        <div id="menu" class="menu">
+            <button onclick="startGame()">Iniciar Jogo</button>
+            <button onclick="showQuestions()">Ver Perguntas e Respostas</button>
+        </div>
+        <div id="game" style="display: none;">
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+        </div>
+        <div id="result" class="result"></div>
+        <div id="back" class="menu" style="display: none;">
+            <button onclick="backToMenu()">Voltar ao Menu</button>
+        </div>
+    </div>
+
+    <script>
+        const perguntasRespostas = [
+            {
+                Pergunta: "Quem são os irmãos do rei Joffrey?",
+                Opções: ['Tommen e Myrcella', 'Hodor e Rickon', 'Tyrion e Myrcella', 'Tywin e Tommen', 'Hodor e Jaime'],
+                Resposta: 'Tommen e Myrcella',
+            },
+            {
+                Pergunta: 'Quem é o senhor das ilhas de Ferro?',
+                Opções: ['Ned Stark', 'Balon Greyjoy', 'Jon Snow', 'Jorah Mormont', 'Khal Drogo'],
+                Resposta: 'Balon Greyjoy',
+            },
+            {
+                Pergunta: 'Qual é o nome do(a) protagonista da primeira temporada de Game of Thrones?',
+                Opções: ['Tyrion Lannister', 'Eddard Stark', 'Jaime Lannister', 'Catelyn Stark', 'Robert Baratheon'],
+                Resposta: 'Eddard Stark',
+            },
+            {
+                Pergunta: 'Qual é o nome da espada usada por Arya Stark?',
+                Opções: ['Gelo', 'Garra Longa', 'Agulha', 'Noite Sombria', 'Garra de Lobo'],
+                Resposta: 'Agulha',
+            },
+            {
+                Pergunta: 'Quem é a selvagem que Jon Snow ama?',
+                Opções: ['Catelyn', 'Meera', 'Ygritte', 'Elysa', 'Jorah'],
+                Resposta: 'Ygritte',
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startGame() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = perguntasRespostas[currentQuestionIndex];
+            document.getElementById('question').textContent = question.Pergunta;
+            const optionsElement = document.getElementById('options');
+            optionsElement.innerHTML = '';
+            question.Opções.forEach((opcao, index) => {
+                const button = document.createElement('button');
+                button.textContent = opcao;
+                button.onclick = () => checkAnswer(opcao);
+                const li = document.createElement('li');
+                li.appendChild(button);
+                optionsElement.appendChild(li);
+            });
+        }
+
+        function checkAnswer(answer) {
+            const question = perguntasRespostas[currentQuestionIndex];
+            if (answer === question.Resposta) {
+                score++;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < perguntasRespostas.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('game').style.display = 'none';
+            document.getElementById('result').textContent = `Você acertou ${score} de ${perguntasRespostas.length} perguntas.`;
+            document.getElementById('back').style.display = 'block';
+        }
+
+        function showQuestions() {
+            document.getElementById('menu').style.display = 'none';
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = '';
+            perguntasRespostas.forEach(pergunta => {
+                resultElement.innerHTML += `<strong>Pergunta:</strong> ${pergunta.Pergunta}<br><strong>Resposta:</strong> ${pergunta.Resposta}<br><br>`;
+            });
+            document.getElementById('back').style.display = 'block';
+        }
+
+        function backToMenu() {
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('game').style.display = 'none';
+            document.getElementById('result').textContent = '';
+            document.getElementById('back').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
